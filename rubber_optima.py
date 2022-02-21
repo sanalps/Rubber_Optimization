@@ -12,9 +12,9 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-#lading saved model
+# lading saved model
 filename = 'rubber2_rf_gridopt.sav'
-#filename = 'rubber_xgb_randopt2.sav'
+# filename = 'rubber_xgb_randopt2.sav'
 loaded_model1 = pickle.load(open(filename, 'rb'))
 filename = 'num_pipeline_in.sav'
 loaded_pipeline = pickle.load(open(filename, 'rb'))
@@ -23,13 +23,13 @@ st.markdown(""" Welcome, Enter the values for Tensile stregth prediction and sel
 Kindly note that this model is optimized using NBR values. """)
 
 
-
 @st.cache
 def filedownload(df):
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
     href = f'<a href="data:file/csv;base64,{b64}" download="rubber optimum.csv">Download CSV File</a>'
     return href
+
 
 def user_input():
     x1,x2,x3,x4,x5,x6=[],[],[],[],[],[]
@@ -73,20 +73,18 @@ def user_input():
 
 
 st.sidebar.header('Estimate Compound Cost')
-#r_price = st.text_area("Enter rubber price", r_price_input, height=250)
+
 ru_price = st.sidebar.number_input("Enter NBR price", value=4.0)
 se_price = st.sidebar.number_input("Enter Sensitizer(TMPTA) price", value=5.0)
 fi_price = st.sidebar.number_input("Enter Filler price", value=0.68)
 ao_price = st.sidebar.number_input("Enter Antioxidant price", value=2.0)
 ac_price = st.sidebar.number_input("Enter Accelerator price", value=1.59)
 su_price = st.sidebar.number_input("Enter Sulfur price", value=0.6)
-st.sidebar.write('The current number is ', ru_price)
-
 
 x_values1 = user_input()
 x_values_list = list(itertools.product(*x_values1))
 
-#sidebar cost
+# sidebar estimate cost
 if st.button('Calculate'):
     try:
         x_values_list_tr = loaded_pipeline.transform(x_values_list)
