@@ -31,8 +31,8 @@ loaded_model1 = pickle.load(open(filename, 'rb'))
 filename = 'num_pipeline_in.sav'
 loaded_pipeline = pickle.load(open(filename, 'rb'))
 st.header('Rubber Compound Optimizer')
-st.markdown(""" Welcome, Enter the values for Tensile stregth prediction and selecting optimum compound combination
-Kindly note that this model is optimized using NBR values. """)
+st.markdown(""" Welcome, Enter the values for Modulus, Tensile stregth, Volume fraction prediction with compound cost calculation. 
+Kindly note that this model was optimized using NBR values. """)
 
 
 @st.cache
@@ -130,6 +130,10 @@ if st.button('Calculate'):
 
         #df4 = pd.DataFrame(modulus_values,tensile_values,vfraction_values, columns=['Modulus Predicted', 'Tensile Predicted', 'V_Fraction Predicted'])
         #st.write('df4 calculated')
+        #remove square brackets
+        df4['Modulus Predicted'] = df4['Modulus Predicted'].str[0]
+        df4['Tensile Predicted'] = df4['Tensile Predicted'].str[0]
+        df4['V_Fraction Predicted'] = df4['V_Fraction Predicted'].str[0]
         #st.dataframe(df4)
         df3 = pd.DataFrame(x_values_list, columns=["Dose (kGy)", 'Sensitizer (phr)', 'Filler (phr)', 'Antioxidant (phr)',
                                                    'Accelerator (phr)', 'Sulfur (phr)'])
