@@ -12,6 +12,18 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
+#loading modulus model
+filename1 = 'rubbermodulus_mlpr_rand_model.sav'
+modulus_model = pickle.load(open(filename1, 'rb'))
+
+#loading tensile model
+filename2 = 'tensile_model_rubber2_rf_gridopt.sav'
+tensile_model = pickle.load(open(filename2, 'rb'))
+
+#loading volume_fraction model
+filename3 = 'rubber_vfra_randopt.sav'
+vfraction_model = pickle.load(open(filename3, 'rb'))
+
 # lading saved model
 filename = 'rubber2_rf_gridopt.sav'
 # filename = 'rubber_xgb_randopt2.sav'
@@ -95,21 +107,40 @@ if st.button('Calculate'):
         st.write('Entered value combinations')
         st.dataframe(df8)
 
+        modulus_values = []
+        tensile_values = []
+        vfraction_values = []
+
         y_vlaues = []
         for xv in x_values_list_tr:
-            y_value = loaded_model1.predict([xv])
-            y_vlaues.append(y_value)
+            m_value = modulus_model.predict([xv])
+            modulus_values.append(m_value)
+            t_value = tensile_model.predict([xv])
+            tensile_values.append(t_value)
+            v_value = vfraction_model.predict([xv])
+            vfraction_values.append(v_value)
+
 
         # sorting results
+        #st.write('values predicted')
+        #st.write(modulus_values)
+        #st.write(tensile_values)
+        #st.write(vfraction_values)
+        df4 = pd.DataFrame({'Modulus Predicted': modulus_values, 'Tensile Predicted': tensile_values, 'V_Fraction Predicted':vfraction_values})
 
-        df4 = pd.DataFrame(y_vlaues, columns=['Tensile Predicted'])
+        #df4 = pd.DataFrame(modulus_values,tensile_values,vfraction_values, columns=['Modulus Predicted', 'Tensile Predicted', 'V_Fraction Predicted'])
+        #st.write('df4 calculated')
+        #st.dataframe(df4)
         df3 = pd.DataFrame(x_values_list, columns=["Dose (kGy)", 'Sensitizer (phr)', 'Filler (phr)', 'Antioxidant (phr)',
                                                    'Accelerator (phr)', 'Sulfur (phr)'])
-        df3['Cost per KG'] = (100*ru_price+df3['Sensitizer (phr)']*se_price+df3['Filler (phr)']*fi_price+df3['Antioxidant (phr)']*ao_price+
-                              df3['Accelerator (phr)']*ac_price+df3['Sulfur (phr)']*su_price)/(100+df3['Sensitizer (phr)']+
-                                df3['Filler (phr)']+df3['Antioxidant (phr)']+df3['Accelerator (phr)']+df3['Sulfur (phr)'])
 
-        df5 = pd.concat([df4, df3], axis=1, join='outer')
+        df5 = pd.concat([df3, df4], axis=1, join='outer')
+        df5['Cost per KG'] = (100 * ru_price + df5['Sensitizer (phr)'] * se_price + df5['Filler (phr)'] * fi_price +
+                              df5['Antioxidant (phr)'] * ao_price +
+                              df5['Accelerator (phr)'] * ac_price + df5['Sulfur (phr)'] * su_price) / (
+                                         100 + df5['Sensitizer (phr)'] +
+                                         df5['Filler (phr)'] + df5['Antioxidant (phr)'] + df5['Accelerator (phr)'] +
+                                         df5['Sulfur (phr)'])
         df6 = df5.sort_values('Tensile Predicted', ascending=False)
         df6 = df6.reset_index(drop=True)
 
