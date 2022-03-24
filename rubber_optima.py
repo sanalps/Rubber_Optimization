@@ -31,7 +31,7 @@ loaded_model1 = pickle.load(open(filename, 'rb'))
 filename = 'num_pipeline_in.sav'
 loaded_pipeline = pickle.load(open(filename, 'rb'))
 st.header('Rubber Compound Optimizer')
-st.markdown(""" Welcome, Enter the values for Modulus, Tensile stregth, Volume fraction prediction with compound cost calculation. 
+st.markdown(""" Welcome, Enter the compound values for Modulus, Tensile strength, Volume fraction prediction with compound cost calculation. 
 Kindly note that this model was optimized using NBR values. """)
 
 
